@@ -4,14 +4,28 @@ from materials.models import Course, Lesson
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    quantity_lessons = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = '__all__'
 
+    @staticmethod
+    def get_quantity_lessons(instance):
+        # if instance.lesson_set.all():
+        return len(instance.lesson_set.all())
+
 
 class LessonSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Lesson
         fields = '__all__'
+
+
+class CourseLessonSerializer(serializers.ModelSerializer):
+
+    course = CourseSerializer()
+
+    class Meta:
+        model = Lesson
+        fields = ('title', 'description_lesson', 'course',)
