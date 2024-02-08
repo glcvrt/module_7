@@ -4,7 +4,7 @@ from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
 
 from materials.models import Course, Lesson
-from materials.serializers import CourseSerializer, LessonSerializer, CourseLessonSerializer
+from materials.serializers import CourseSerializer, LessonSerializer
 from users.models import Payments
 from users.serializers import PaymentsSerializer
 
@@ -37,19 +37,6 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
 
 
-class CourseLessonListAPIView(generics.ListAPIView):
-    queryset = Lesson.objects.filter(course__isnull=False)
-    serializer_class = CourseLessonSerializer
 
 
-class PaymentsListAPIView(generics.ListAPIView):
-    serializer_class = PaymentsSerializer
-    queryset = Payments.objects.all()
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('course', 'lesson', 'payment_type')
-    ordering_fields = ('date',)
-
-
-class PaymentsCreateAPIView(generics.CreateAPIView):
-    serializer_class = PaymentsSerializer
 
