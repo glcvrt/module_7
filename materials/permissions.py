@@ -1,10 +1,28 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsUserOrStaff(BasePermission):
+class IsModerator(BasePermission):
+    massage = "Вы не являетесь модератором"
 
     def has_permission(self, request, view):
-        if request.user.is_staff:
+        if request.user.role == UserRoles.MODERATOR:
             return True
+        return False
 
-        return request.user == view.get_object().user
+
+class IsLessonOwner(BasePermission):
+    massage = "Вы не являетесь владельцем"
+
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj.user:
+            return True
+        return False
+
+
+class IsCourseOwner(BasePermission):
+    massage = "Вы не являетесь владельцем"
+
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj.user:
+            return True
+        return False
