@@ -1,5 +1,7 @@
 from rest_framework.permissions import BasePermission
 
+from users.models import UserRoles
+
 
 class IsModerator(BasePermission):
     massage = "Вы не являетесь модератором"
