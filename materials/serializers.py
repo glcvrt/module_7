@@ -22,7 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_quantity_lessons(instance):
         # if instance.lesson_set.all():
-        return len(instance.lesson_set.all())
+        return instance.lessons_set.count()
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

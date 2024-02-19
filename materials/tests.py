@@ -53,7 +53,6 @@ class SubscribeTestCase(APITestCase):
             is_staff=True,
             is_superuser=True
         )
-        self.user.set_password('12345')
         self.user.save()
         self.client.force_authenticate(user=self.user)
         self.subscription = Subscription.objects.create(
@@ -65,7 +64,6 @@ class SubscribeTestCase(APITestCase):
     def test_create_subscription(self):
         data = {
             'user': self.user.pk,
-            'is_subscribed': True,
             'course': self.course.pk
         }
 
@@ -79,7 +77,6 @@ class SubscribeTestCase(APITestCase):
     def test_update(self):
         data = {
             'user': self.user.pk,
-            'is_subscribed': True,
             'course': self.course.pk
         }
         response = self.client.put('materials:subscription', data=data)

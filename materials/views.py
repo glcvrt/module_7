@@ -64,12 +64,12 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
 class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        new_lesson = serializer.save()
-        new_lesson.user = self.request.user
-        new_lesson.save()
+    def perform_create(self, serializer, **kwargs):
+        new_sub = kwargs.get('course_id')
+        new_sub.user = self.request.user
+        new_sub.save()
 
 
 
