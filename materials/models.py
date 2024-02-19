@@ -26,7 +26,7 @@ class Lesson(models.Model):
     preview_lesson = models.ImageField(upload_to='media/', verbose_name='Превью урока', **NULLABLE)
     link = models.CharField(max_length=200, verbose_name='Ссылка на урок')
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', **NULLABLE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
 
     def __str__(self):
@@ -35,3 +35,17 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
+
+
+class Subscription(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    is_subscribed = models.BooleanField(default=False, verbose_name='Статус подписки')
+
+    def __str__(self):
+        return f"{self.user}: {self.course}"
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
