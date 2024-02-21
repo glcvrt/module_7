@@ -63,7 +63,6 @@ class SubscribeTestCase(APITestCase):
 
     def test_create_subscription(self):
         data = {
-            'user': self.user.pk,
             'course': self.course.pk
         }
 
@@ -76,7 +75,6 @@ class SubscribeTestCase(APITestCase):
 
     def test_update(self):
         data = {
-            'user': self.user.pk,
             'course': self.course.pk
         }
         response = self.client.put('materials:subscription', data=data)
