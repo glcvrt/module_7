@@ -11,6 +11,7 @@ class Course(models.Model):
     description = models.CharField(max_length=200, verbose_name='Описание')
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE)
+    price = models.PositiveIntegerField(default=1000, verbose_name='Стоимость курса')
 
     def __str__(self):
         return f'{self.name}'

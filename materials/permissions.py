@@ -28,3 +28,8 @@ class IsCourseOwner(BasePermission):
         if request.user == obj.user:
             return True
         return False
+
+
+class IsNotStaffUser(BasePermission):
+    def has_permission(self, request, view):
+        return not request.user.is_staff

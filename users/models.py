@@ -24,17 +24,15 @@ class User(AbstractUser):
 
 class Payments(models.Model):
 
-    types_pay = [
-        ('remittance', 'переводом на счет'),
-        ('cash', 'наличными')
-    ]
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
     date = models.DateTimeField(verbose_name='Дата оплаты', **NULLABLE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
     payment = models.IntegerField(verbose_name='сумма оплаты')
-    payment_type = models.CharField(choices=types_pay, default='remittance', verbose_name='Способ оплаты'),
+    payment_method = models.CharField(max_length=1, choices=[('1', 'Наличные'), ('2', 'Безнал')],
+                                      verbose_name='Метод платежа',)
+    is_successful = models.BooleanField(default=False, verbose_name='Статус платежа')
+    session = models.CharField(max_length=150, verbose_name='Сессия для оплаты', **NULLABLE)
 
     def __str__(self):
         return f'{self.date}'
