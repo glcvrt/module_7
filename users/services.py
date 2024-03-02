@@ -19,8 +19,7 @@ def send_payment_link_to_mail(url, email):
     )
 
 
-def get_session(serializer: Payments):
-    """ Получает сессию для оплаты курса """
+def create_price(serializer: Payments):
     course_title = serializer.course.title
     product = stripe.Product.create(name=course_title)
     price = stripe.Price.create(
@@ -28,6 +27,11 @@ def get_session(serializer: Payments):
         currency='rub',
         product=product.id,
     )
+    return price
+
+
+def create_session(serializer: Payments, price):
+
     session = stripe.checkout.Session.create(
         success_url='https://example.com/success',
         line_items=[
@@ -39,6 +43,11 @@ def get_session(serializer: Payments):
         mode='payment',
         customer_email=serializer.user.email
     )
+    return session
+
+
+def get_session(serializer: Payments, session):
+
     send_payment_link_to_mail(session.url, serializer.user.email)
     return session
 

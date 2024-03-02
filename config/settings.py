@@ -12,15 +12,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import os
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+ot_env = os.path.join(BASE_DIR, '.venv')
+load_dotenv(dotenv_path=dot_env)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x-zx1xb#o)c7t&1jl8x#+5-ff19s1gh3z$kg-2=_*9#@x@8#j7'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,9 +94,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'module_7',
-        'USER': 'postgres',
-        'PASSWORD': 'i1485563',
+        'NAME': os.getenv('NAME'),
+        'USER': os.getenv('USER'),
+        'PASSWORD': os.getenv('PASSWORD'),
     }
 }
 
@@ -158,12 +165,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'i1472138@yandex.ru'
-EMAIL_HOST_PASSWORD = 'tmbqjwvzzqeofhxa'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
 
-STRIPE_SECRET_KEY = 'sk_test_51OpLu6GQeMRecuDnTgrsLMMRll3Sow222ozIy9rKy4Ss54bOudgOmyns7GUEI79x4LU0ZobKvnfrqEupFeetBK5200AryaFYWn'
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
