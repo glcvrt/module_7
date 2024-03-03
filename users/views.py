@@ -7,7 +7,7 @@ from rest_framework.generics import get_object_or_404
 from materials.permissions import IsNotStaffUser
 from users.models import Payments
 from users.serializers import PaymentSerializer, UserSerializer, PaymentCreateSerializer
-from users.services import get_session, retrieve_session
+from users.services import retrieve_session, create_product, create_price, create_session
 
 
 class PaymentsListAPIView(generics.ListAPIView):
@@ -28,7 +28,9 @@ class PaymentCreateAPIView(generics.CreateAPIView):
         payment = serializer.save()
         payment.user = self.request.user
         if payment.payment_method == '2':
-            payment.session = get_session(payment).id
+            product = create_product(payment)
+            price_id = create_price(payment, product)
+            payment.session = create_session(price_id).id
         payment.save()
 
 
