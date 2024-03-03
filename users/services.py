@@ -10,46 +10,34 @@ from django.core.mail import send_mail
 stripe.api_key = STRIPE_SECRET_KEY
 
 
-def send_payment_link_to_mail(url, email):
-    send_mail(
-        subject='Оплата курса',
-        message=f'Ссылка для оплаты курса: {url}',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
+def create_price(payment):
+
+    product = stripe.Product.create(
+        name=payment.paid_course.name
     )
 
-
-def create_price(serializer: Payments):
-    course_title = serializer.course.title
-    product = stripe.Product.create(name=course_title)
     price = stripe.Price.create(
-        unit_amount=serializer.course.price * 100,
-        currency='rub',
-        product=product.id,
+        currency="rub",
+        unit_amount=int(payment.payment_amount)*100,
+        product_data={"name": product['name']},
     )
-    return price
+
+    return price['id']
 
 
-def create_session(serializer: Payments, price):
+def create_session(stripe_price_id):
 
     session = stripe.checkout.Session.create(
-        success_url='https://example.com/success',
-        line_items=[
-            {
-                'price': price.id,
-                'quantity': 1,
-            }
-        ],
+        success_url="http://127.0.0.1:8000/",
+        line_items=[{
+            'price': stripe_price_id,
+            'quantity': 1
+        }],
         mode='payment',
-        customer_email=serializer.user.email
+
     )
-    return session
 
-
-def get_session(serializer: Payments, session):
-
-    send_payment_link_to_mail(session.url, serializer.user.email)
-    return session
+    return session['url'], session['id']
 
 
 def retrieve_session(session):

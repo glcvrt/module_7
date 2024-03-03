@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ot_env = os.path.join(BASE_DIR, '.venv')
+ot_env = os.path.join(BASE_DIR, '.env.sample')
 load_dotenv(dotenv_path=dot_env)
 
 
