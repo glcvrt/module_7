@@ -17,6 +17,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True, verbose_name='Имя пользователя')
     city = models.CharField(max_length=100, verbose_name='Город', **NULLABLE)
     role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.MEMBER, verbose_name='Роль')
+    last_login = models.DateTimeField(auto_now=True, verbose_name='Дата последнего входа', **NULLABLE)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

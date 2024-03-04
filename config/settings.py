@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 import os
@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ot_env = os.path.join(BASE_DIR, '.env.sample')
+dot_env = os.path.join(BASE_DIR, '.env.sample')
 load_dotenv(dotenv_path=dot_env)
 
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
     
     'users',
     'materials',
@@ -174,3 +175,21 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+CELERY_TIMEZONE = "Europe/Moscow"
+
+CELERY_TASK_TRACK_STARTED = True
+
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'education.tasks.check_login',
+        'schedule': timedelta(minutes=1),
+    },
+}
