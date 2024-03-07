@@ -4,29 +4,28 @@ from celery import shared_task
 from django.core.mail import send_mail
 from django.utils import timezone
 
-from config import settings
-from materials.models import Course
+from config.settings import EMAIL_HOST_USER
+from materials.models import Course, Subscription
 from users.models import User
 
 
 @shared_task
-def check_update():
-    for i in Course.objects.all():
-        if i.date_update > i.date_preview:
+def update_course_notification(course_id):
+    subscriptions = Subscription.objects.filter(course_id=course_id, status=True)
+
+    for sub in subscriptions:
+        if sub.course.last_update < timezone.now() + timezone.timedelta(hours=4):
             send_mail(
-                subject='Информация о курсе',
-                message=f'Курс был обновлен',
-                from_email=settings.EMAIL_HOST_USER
+                subject='Обновление курса',
+                message=f'Курс {sub.course.name} был обновлен.',
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[sub.user.email],
             )
-            i.date_preview = i.date_update
-            i.save()
 
 
 @shared_task
-def check_login():
-    a = timezone.now()
-    for i in User.objects.all():
-        count_date = a - i.last_login.replace(tzinfo=timezone.utc)
-        if count_date > datetime.timedelta(days=30):
-            i.role = 'member'
-            i.save()
+def check_user_activity(user_id):
+    user = User.objects.get(id=user_id)
+    if user.last_login < timezone.now() - timezone.timedelta(days=30):
+        user.is_active = False
+        user.save()
