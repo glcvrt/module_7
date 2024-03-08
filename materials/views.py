@@ -1,4 +1,4 @@
-
+from django.utils import timezone
 from rest_framework import viewsets, generics
 
 from materials.models import Course, Lesson, Subscription
@@ -7,6 +7,8 @@ from materials.permissions import IsCourseOwner, IsModerator, IsLessonOwner
 from materials.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
+
+from .tasks import update_course_notification
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -23,6 +25,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == 'destroy':
             permission_classes = [IsAuthenticated, IsCourseOwner]
         return [permission() for permission in permission_classes]
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        course_id = course.id
+        course.last_update = timezone.now()
+
+        update_course_notification.delay(course_id)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -70,7 +79,3 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         new_sub = kwargs.get('course_id')
         new_sub.user = self.request.user
         new_sub.save()
-
-
-
-
